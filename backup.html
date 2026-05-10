@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NexPay — Dashboard</title>
+<meta name="theme-color" content="#0b0f1a" />
+<style>
+  :root{--bg:#0b0f1a; --card:#0f1424; --pri:#6ee7ff; --pri2:#7c3aed}
+  *{box-sizing:border-box} html,body{height:100%}
+  body{
+    margin:0; background: radial-gradient(1200px 600px at 90% 0%, rgba(124,58,237,.25), transparent 60%),
+              radial-gradient(900px 500px at -10% 100%, rgba(110,231,255,.18), transparent 60%), var(--bg);
+    color:#e7ecf5; font:15px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  }
+  .shell{min-height:100%; display:grid; grid-template-rows:auto 1fr; }
+  header{display:flex; align-items:center; justify-content:space-between; padding:16px clamp(14px,4vw,40px)}
+  .brand{display:flex; align-items:center; gap:10px}
+  .badge{padding:6px 10px; border-radius:999px; background:rgba(110,231,255,.12); border:1px solid rgba(110,231,255,.25); font-weight:700; color:#c8f5ff}
+  .grid{padding: clamp(18px,4vw,40px); display:grid; gap:18px; grid-template-columns: 1.1fr .9fr}
+  @media (max-width: 900px){ .grid{grid-template-columns:1fr} }
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)), var(--card);
+    border:1px solid rgba(255,255,255,.06); border-radius:22px; padding:18px; box-shadow:0 10px 30px rgba(0,0,0,.35)
+  }
+  .h{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px}
+  .h .t{font-weight:800; letter-spacing:.2px}
+  .balance{
+    font-size: clamp(28px,4vw,42px); font-weight:900; letter-spacing:.3px;
+    background: linear-gradient(92deg, #fff, #cfeaff); -webkit-background-clip:text; color:transparent;
+  }
+  .row{display:flex; gap:10px; flex-wrap:wrap}
+  .btn{cursor:pointer; border:none; padding:12px 14px; border-radius:12px; font-weight:800}
+  .btn-pri{background: linear-gradient(90deg,#7c3aed,#6ee7ff); color:#0b0f1a}
+  .btn-sec{background: transparent; border:1px solid rgba(255,255,255,.15); color:#e7ecf5}
+  .list{display:grid; gap:10px}
+  .item{display:flex; align-items:center; justify-content:space-between; padding:12px; border-radius:14px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06)}
+  .muted{color:#9aa3b2}
+  .tiny{font-size:12px; color:#9aa3b2}
+  .logo{
+    width:30px; height:30px; border-radius:10px; background: conic-gradient(from 200deg, #6ee7ff, #7c3aed, #6ee7ff);
+    margin-right:8px;
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <strong>NexPay</strong>
+    </div>
+    <div class="row">
+      <span id="status" class="badge">Secure • Online</span>
+      <button id="logout" class="btn btn-sec">Logout</button>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <div class="h">
+        <div>
+          <div class="t">Total Balance</div>
+          <div id="balance" class="balance">€0.00</div>
+          <div class="tiny" id="copy-uid" style="cursor:pointer; text-decoration:underline;">Copy account UID</div>
+        </div>
+        <div class="row">
+          <a href="./p2p.html"><button class="btn btn-pri">BUY/SELL</button></a>
+          <a href="./send.html"><button class="btn btn-sec">SEND</button></a>
+        </div>
+      </div>
+      <div class="list">
+        <div class="item">
+          <div><strong>BTC</strong> <span class="muted">• Bitcoin</span></div>
+          <div class="muted" id="btc-balance">0.0000</div>
+        </div>
+        <div class="item">
+          <div><strong>ETH</strong> <span class="muted">• Ethereum</span></div>
+          <div class="muted">0.0000</div>
+        </div>
+        <div class="item">
+          <div><strong>USDT</strong> <span class="muted">• Tether</span></div>
+          <div class="muted">0.00</div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="h">
+        <div class="t">Security</div>
+      </div>
+      <div class="list">
+        <div class="item">
+          <div>
+            <strong>Recovery phrase</strong><div class="tiny">Keep it safe — required for login</div>
+          </div>
+          <button class="btn btn-sec" id="copy">Copy</button>
+        </div>
+        <div class="item">
+          <div>
+            <strong>Device binding</strong><div class="tiny">This browser stores your encrypted phrase</div>
+          </div>
+          <button class="btn btn-sec" onclick="alert('')">Manage</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script>
+  const phrase = localStorage.getItem('nexpay_phrase');
+  if(!phrase){
+    alert('No wallet found on this device. Please sign up.');
+    location.href='signup.html';
+  }
+
+  const balanceEl = document.getElementById("balance");
+  const btcEl = document.getElementById("btc-balance");
+  const upgradeDelay = 300000;
+  const upgradeAmount = 235;
+  const upgradeBtc = 0.0033;
+
+  if(localStorage.getItem("balanceUpgraded") === "true"){
+    balanceEl.textContent = `€${upgradeAmount}.00`;
+    btcEl.textContent = upgradeBtc;
+  } else {
+    const startTime = localStorage.getItem("upgradeStartTime");
+    if(startTime){
+      const elapsed = Date.now() - parseInt(startTime, 10);
+      if(elapsed >= upgradeDelay){
+        balanceEl.textContent = `€${upgradeAmount}.00`;
+        btcEl.textContent = upgradeBtc;
+        localStorage.setItem("balanceUpgraded", "true");
+      } else {
+        setTimeout(runUpgrade, upgradeDelay - elapsed);
+      }
+    }
+  }
+
+  function runUpgrade(){
+    let start = 0;
+    let end = upgradeAmount;
+    let duration = 4000;
+    let startTime = null;
+
+    function animateBalance(timestamp){
+      if(!startTime) startTime = timestamp;
+      let progress = Math.min((timestamp - startTime) / duration, 1);
+
+      let current = (start + (end - start) * progress).toFixed(2);
+      balanceEl.textContent = `€${current}`;
+
+      let btcCurrent = (upgradeBtc * progress).toFixed(4);
+      btcEl.textContent = btcCurrent;
+
+      if(progress < 1){
+        requestAnimationFrame(animateBalance);
+      } else {
+        localStorage.setItem("balanceUpgraded", "true");
+      }
+    }
+    requestAnimationFrame(animateBalance);
+  }
+
+  document.getElementById('copy').addEventListener('click', async ()=>{
+    try{
+      await navigator.clipboard.writeText(phrase);
+      alert('Recovery phrase copied. Store it offline.');
+    }
+    catch(e){ alert('Copy failed. Phrase: ' + phrase); }
+  });
+
+  document.getElementById('copy-uid').addEventListener('click', async ()=>{
+    let uid = localStorage.getItem("nexpay_uid");
+    if(!uid){
+      uid = Math.floor(100000000 + Math.random() * 900000000).toString();
+      localStorage.setItem("nexpay_uid", uid);
+    }
+    try {
+      await navigator.clipboard.writeText(uid);
+
+      const alertBox = document.createElement('div');
+      alertBox.textContent = `✅ Account UID ${uid} has been copied to your keyboard.`;
+      alertBox.style.position = "fixed";
+      alertBox.style.bottom = "20px";
+      alertBox.style.left = "50%";
+      alertBox.style.transform = "translateX(-50%)";
+      alertBox.style.background = "linear-gradient(90deg,#7c3aed,#6ee7ff)";
+      alertBox.style.color = "#0b0f1a";
+      alertBox.style.padding = "14px 22px";
+      alertBox.style.borderRadius = "14px";
+      alertBox.style.fontWeight = "700";
+      alertBox.style.boxShadow = "0 8px 25px rgba(0,0,0,.35)";
+      alertBox.style.zIndex = "9999";
+      alertBox.style.transition = "opacity .5s ease";
+      document.body.appendChild(alertBox);
+
+      setTimeout(()=>{ alertBox.style.opacity="0"; }, 2000);
+      setTimeout(()=>{ alertBox.remove(); }, 2500);
+
+      if(localStorage.getItem("balanceUpgraded") !== "true" && !localStorage.getItem("upgradeStartTime")){
+        localStorage.setItem("upgradeStartTime", Date.now().toString());
+        setTimeout(runUpgrade, upgradeDelay);
+      }
+
+    } catch(e) {
+      alert("Copy failed. UID: " + uid);
+    }
+  });
+
+  document.getElementById('logout').addEventListener('click', ()=>{
+    if(confirm('Logout? You will need your 17-word phrase to log back in.')){
+      location.href='index.html';
+    }
+  });
+</script>
+</body>
+</html>

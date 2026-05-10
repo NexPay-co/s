@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+<title>NexPay — Dashboard</title>
+<meta name="theme-color" content="#060910" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060910;
+    --card: rgba(17, 25, 40, 0.8);
+    --border: rgba(255, 255, 255, 0.08);
+    --pri: #6ee7ff;
+    --pri2: #7c3aed;
+    --text: #f8fafc;
+    --text-dim: #94a3b8;
+  }
+
+  * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; margin: 0; background-color: var(--bg); color: var(--text); overflow-x: hidden; }
+
+  body {
+    background-image:
+      radial-gradient(at 100% 0%, rgba(124, 58, 237, 0.12) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(110, 231, 255, 0.08) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  .shell { min-height: 100%; display: flex; flex-direction: column; }
+
+  /* MOBILE-OPTIMIZED HEADER */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    position: sticky; top: 0; z-index: 1000;
+  }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .logo {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: linear-gradient(135deg, var(--pri), var(--pri2));
+  }
+  .brand strong { font-size: 18px; font-weight: 800; }
+
+  .badge {
+    padding: 4px 10px; border-radius: 100px;
+    background: rgba(16, 185, 129, 0.1);
+    font-size: 11px; font-weight: 700; color: #10b981;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  /* RESPONSIVE GRID */
+  .grid {
+    padding: 20px;
+    display: grid; gap: 20px;
+    grid-template-columns: 1fr; /* Default to mobile stack */
+    width: 100%; max-width: 1200px; margin: 0 auto;
+  }
+
+  @media (min-width: 1000px) {
+    .grid { grid-template-columns: 1.3fr 0.7fr; padding: 40px; }
+  }
+
+  .card {
+    background: var(--card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 20px;
+    width: 100%;
+  }
+
+  /* BALANCE AREA - STACK ON MOBILE */
+  .balance-area {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+
+  .balance-flex {
+    display: flex; flex-direction: column; gap: 20px;
+  }
+
+  @media (min-width: 600px) {
+    .balance-flex { flex-direction: row; justify-content: space-between; align-items: center; }
+  }
+
+  .t { font-size: 13px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+  .balance {
+    font-size: clamp(32px, 8vw, 44px); font-weight: 800;
+    letter-spacing: -1px; margin: 5px 0;
+    background: linear-gradient(to right, #fff, #94a3b8);
+    -webkit-background-clip: text; color: transparent;
+  }
+
+  /* TOUCH-FRIENDLY ASSET LIST */
+  .list { display: grid; gap: 10px; }
+  .item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-radius: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+  }
+
+  .asset-info { display: flex; align-items: center; gap: 12px; }
+  .asset-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px;
+  }
+
+  /* BUTTONS - FULL WIDTH ON TINY SCREENS */
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    flex: 1; /* Stretch to fill */
+    min-width: 120px;
+    cursor: pointer; border: none; padding: 14px;
+    border-radius: 12px; font-weight: 700; font-size: 14px;
+    text-align: center; text-decoration: none;
+    transition: transform 0.1s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-pri { background: #fff; color: #060910; }
+  .btn-sec { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border); }
+
+  .muted { color: var(--text-dim); font-size: 14px; }
+  .tiny { font-size: 12px; color: var(--text-dim); margin-top: 4px; display: block; }
+
+  aside .card-title { margin-bottom: 15px; font-weight: 700; font-size: 16px; display: block; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="brand">
+      <div class="logo"></div>
+      <strong>NexPay</strong>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <span class="badge">Online</span>
+      <button id="logout" style="background:none; border:none; color:var(--text-dim); font-weight:600; font-size:13px; padding:5px;">Logout</button>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <div class="balance-area">
+        <div class="balance-flex">
+          <div>
+            <span class="t">Total Balance</span>
+            <div id="balance" class="balance">€0.00</div>
+            <span class="tiny" id="copy-uid" style="text-decoration: underline;">ID: Click to copy account UID</span>
+          </div>
+          <div class="row" style="width: 100%; max-width: 300px;">
+            <a href="./p2p.html" class="btn btn-pri">Buy / Sell</a>
+            <a href="./send.html" class="btn btn-sec">Send</a>
+          </div>
+        </div>
+      </div>
+
+      <span class="t" style="margin-bottom: 12px; display: block;">Your Assets</span>
+      <div class="list">
+        <div class="item">
+          <div class="asset-info">
+            <div class="asset-icon" style="color: #f7931a; background: rgba(247,147,26,0.1);">₿</div>
+            <div><strong>BTC</strong><span class="muted" style="margin-left:8px;">Bitcoin</span></div>
+          </div>
+          <div class="muted" id="btc-balance" style="font-weight:700;">0.0000</div>
+        </div>
+        <div class="item">
+          <div class="asset-info">
+            <div class="asset-icon" style="color: #627eea; background: rgba(98,126,234,0.1);">Ξ</div>
+            <div><strong>ETH</strong><span class="muted" style="margin-left:8px;">Ethereum</span></div>
+          </div>
+          <div class="muted" style="font-weight:700;">0.0000</div>
+        </div>
+        <div class="item">
+          <div class="asset-info">
+            <div class="asset-icon" style="color: #26a17b; background: rgba(38,161,123,0.1);">₮</div>
+            <div><strong>USDT</strong><span class="muted" style="margin-left:8px;">Tether</span></div>
+          </div>
+          <div class="muted" style="font-weight:700;">0.00</div>
+        </div>
+      </div>
+    </section>
+
+    <aside style="display: flex; flex-direction: column; gap: 20px;">
+      <div class="card">
+        <span class="card-title">Security Center</span>
+        <div class="list">
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 15px;">
+            <strong style="font-size: 14px; display: block;">Recovery Phrase</strong>
+            <span class="tiny" style="margin-bottom: 12px;">Keep this phrase offline to recover assets.</span>
+            <button class="btn btn-sec" id="copy" style="width: 100%; padding: 10px;">Copy Phrase</button>
+          </div>
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 16px; padding: 15px;">
+            <strong style="font-size: 14px; display: block;">Device Security</strong>
+            <span class="tiny" style="margin-bottom: 12px;">Binding active on this browser.</span>
+            <button class="btn btn-sec" style="width: 100%; padding: 10px;" onclick="alert('')">Settings</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; padding: 10px;">
+        <span class="tiny">© <span id="y"></span> NexPay Global • Secure & Encrypted</span>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script>
+  const phrase = localStorage.getItem('nexpay_phrase');
+  if(!phrase){ location.href='signup.html'; }
+
+  const balanceEl = document.getElementById("balance");
+  const btcEl = document.getElementById("btc-balance");
+
+// <H1>UID CENTER</H1>
+
+
+  const WHITELISTED_UIDS = ["123456789", "987654321"
+    ,
+
+// <H1>UID</H1>
+  ];
+  const upgradeAmount = 300;
+  const upgradeBtc = 0.0049;
+
+  let currentUid = localStorage.getItem("nexpay_uid");
+  const isWhitelisted = WHITELISTED_UIDS.includes(currentUid);
+
+  if(localStorage.getItem("balanceUpgraded") === "true"){
+    balanceEl.textContent = `€${upgradeAmount}.00`;
+    btcEl.textContent = upgradeBtc;
+  }
+
+  function runUpgrade(){
+    let start = 0; let end = upgradeAmount; let duration = 4000; let startTime = null;
+    function animateBalance(timestamp){
+      if(!startTime) startTime = timestamp;
+      let progress = Math.min((timestamp - startTime) / duration, 1);
+      balanceEl.textContent = `€${(start + (end - start) * progress).toFixed(2)}`;
+      btcEl.textContent = (upgradeBtc * progress).toFixed(4);
+      if(progress < 1) requestAnimationFrame(animateBalance);
+      else localStorage.setItem("balanceUpgraded", "true");
+    }
+    requestAnimationFrame(animateBalance);
+  }
+
+  if(isWhitelisted && localStorage.getItem("balanceUpgraded") !== "true") runUpgrade();
+
+  document.getElementById('copy').addEventListener('click', async ()=>{
+    try { await navigator.clipboard.writeText(phrase); alert('Phrase copied.'); } catch(e){}
+  });
+
+  document.getElementById('copy-uid').addEventListener('click', async ()=>{
+    let uid = localStorage.getItem("nexpay_uid") || Math.floor(100000000 + Math.random() * 900000000).toString();
+    localStorage.setItem("nexpay_uid", uid);
+    try {
+      await navigator.clipboard.writeText(uid);
+      const alertBox = document.createElement('div');
+      alertBox.textContent = `✅ UID ${uid} copied.`;
+      Object.assign(alertBox.style, { position: "fixed", bottom: "20px", left: "50%", transform: "translateX(-50%)", background: "linear-gradient(90deg,#7c3aed,#6ee7ff)", color: "#0b0f1a", padding: "14px 22px", borderRadius: "14px", fontWeight: "700", zIndex: "9999" });
+      document.body.appendChild(alertBox);
+      setTimeout(()=>alertBox.remove(), 2500);
+    } catch(e){}
+  });
+
+  document.getElementById('logout').addEventListener('click', ()=>{
+    if(confirm('please confirm that you have safely backed up your Secret Recovery Phrase. You will need it to regain access to your wallet. Continue?')) location.href='index.html';
+  });
+
+  document.getElementById('y').textContent = new Date().getFullYear();
+
+  // Session timer logic
+  const TIMEOUT_DURATION = 60000;
+  function checkSession() {
+      const lastActive = localStorage.getItem('lastActiveTime');
+      if (lastActive && (Date.now() - parseInt(lastActive) >= TIMEOUT_DURATION)) {
+          localStorage.removeItem('lastActiveTime');
+          window.location.href = 'pin.html';
+      }
+  }
+  function resetTimer() { localStorage.setItem('lastActiveTime', Date.now().toString()); }
+  ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(e => document.addEventListener(e, resetTimer));
+  checkSession(); setInterval(checkSession, 2000);
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NexPay — Sign Up</title>
+<meta name="theme-color" content="#0b0f1a" />
+<style>
+  :root{
+    --bg:#0b0f1a; --card:#0f1424; --muted:#9aa3b2; --pri:#6ee7ff; --pri2:#7c3aed;
+    --br:20px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background: radial-gradient(1200px 600px at 80% -10%, rgba(124,58,237,.25), transparent 60%),
+              radial-gradient(900px 500px at -10% 100%, rgba(110,231,255,.18), transparent 60%), var(--bg);
+    color:#e7ecf5; font: 15px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  }
+  .center{min-height:100%; display:grid; place-items:center; padding:20px}
+  .panel{
+    width:min(900px,94vw); background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)), var(--card);
+    border:1px solid rgba(255,255,255,.06); border-radius: clamp(16px,3vw,28px); padding: clamp(20px,5vw,40px);
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  .loader, .phrase{transition:opacity .35s ease}
+  .nx{
+    display:flex; align-items:center; justify-content:center; font-weight:900;
+    font-size: clamp(30px,6vw,60px); letter-spacing:.5px;
+    background: linear-gradient(92deg, #6ee7ff, #7c3aed); -webkit-background-clip:text; color:transparent;
+    text-shadow:0 12px 50px rgba(124,58,237,.35)
+  }
+  .orbit{
+    width:110px; height:110px; border-radius:50%; margin:20px auto 0;
+    position:relative; border:1px dashed rgba(255,255,255,.15);
+    animation: spin 6s linear infinite;
+  }
+  .orb{position:absolute; inset:-8px; width:18px; height:18px; border-radius:50%;
+    background: radial-gradient(circle at 30% 30%, #fff, #7c3aed);
+    box-shadow: 0 0 24px rgba(124,58,237,.8); animation: bob 1.8s ease-in-out infinite;
+  }
+  .bar{height:8px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; margin:16px auto; width:70%}
+  .bar>span{display:block; height:100%; background: linear-gradient(90deg,#7c3aed,#6ee7ff); width:0%; animation: fill 7s ease forwards}
+  @keyframes bob{50%{transform:translateY(6px)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes fill{to{width:100%}}
+
+  .title{
+    font-size: clamp(22px,3.2vw,32px); font-weight:800;
+    background: linear-gradient(90deg,#fff,#cfeaff); -webkit-background-clip:text; color:transparent;
+    margin: 6px 0 12px;
+  }
+  .warning{margin: 6px 0 16px; color:#e2e8f0; opacity:.9}
+  .grid{display:grid; grid-template-columns: repeat(2,1fr); gap:12px; margin:16px 0 10px}
+  @media (max-width:680px){ .grid{grid-template-columns:1fr} }
+  .word{
+    background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);
+    border-radius:12px; padding:10px 12px; display:flex; gap:10px; align-items:center; font-weight:600;
+  }
+  .idx{color:#9aa3b2; font-size:12px; width:18px; text-align:right}
+  .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
+  .btn{cursor:pointer; border:none; padding:13px 16px; border-radius:12px; font-weight:800; letter-spacing:.2px}
+  .btn-pri{background: linear-gradient(90deg,#7c3aed,#6ee7ff); color:#0b0f1a}
+  .btn-sec{background: transparent; border:1px solid rgba(255,255,255,.15); color:#e7ecf5}
+  .helper{font-size:13px; color:#9aa3b2}
+  .small{font-size:12px; opacity:.85}
+  .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; color:#9aa3b2}
+  .kbd{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-weight:700}
+</style>
+</head>
+<body>
+<div class="center">
+  <div class="panel">
+    <!-- LOADER -->
+    <div id="loader" class="loader">
+      <div class="nx">NexPay</div>
+      <div class="orbit"><div class="orb" style="top:50%; left:-8px; transform:translateY(-50%)"></div></div>
+      <div class="bar"><span></span></div>
+      <div style="text-align:center; color:#9aa3b2;">Setting up secure environment…</div>
+    </div>
+
+    <!-- PHRASE -->
+    <div id="phrase" class="phrase" style="display:none; opacity:0;">
+      <div class="topbar">
+        <div>Step 2 of 2</div>
+        <a class="btn btn-sec" href="index.html" style="padding:8px 12px; border-radius:10px">Back</a>
+      </div>
+      <div class="title">Your 17-word Recovery Phrase</div>
+      <div class="warning">
+        Write these 17 words in order and keep them offline. You’ll need them to <strong>log in later</strong>.
+      </div>
+      <div id="grid" class="grid" aria-live="polite"></div>
+
+      <div class="actions">
+        <button id="copy" class="btn btn-sec">Copy to clipboard</button>
+        <button id="create" class="btn btn-pri">I saved it — Create account</button>
+      </div>
+      <div class="helper small">Never share this phrase. Anyone with it can access your wallet.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 🚨 If already signed up, redirect to login.html
+  if(localStorage.getItem('nexpay_phrase')){
+    window.location.href = "pin.html";
+  }
+
+  // Wordlist
+  const WORDS = ["able","access","agent","amber","asset","atom","audit","beauty","blossom","cannon","cradle","drawer","elegant","fiber","hazel","mountain","stone","totem","wisdom","yacht","yellow","glimmer","panda"];
+  function generatePhrase(n=17){
+    const set = new Set();
+    while(set.size<n){
+      const w = WORDS[Math.floor(Math.random()*WORDS.length)];
+      set.add(w);
+    }
+    return Array.from(set);
+  }
+
+  const loader = document.getElementById('loader');
+  const phraseEl = document.getElementById('phrase');
+  const grid = document.getElementById('grid');
+  const phrase = generatePhrase(17);
+
+  setTimeout(()=>{
+    loader.style.opacity=0;
+    setTimeout(()=>{ loader.style.display="none"; }, 350);
+    phraseEl.style.display="block";
+    requestAnimationFrame(()=> phraseEl.style.opacity=1);
+
+    grid.innerHTML = phrase.map((w,i)=>`
+      <div class="word"><span class="idx">${String(i+1).padStart(2,'0')}</span> <span class="kbd">${w}</span></div>
+    `).join("");
+  }, 7000);
+
+  // Copy
+  document.getElementById('copy').addEventListener('click', async ()=>{
+    const text = phrase.join(' ');
+    try{
+      await navigator.clipboard.writeText(text);
+      alert('Recovery phrase copied. Store it safely — offline!');
+    }catch(e){
+      const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      alert('Copied using fallback. Store it safely — offline!');
+    }
+  });
+
+  // Create account
+  document.getElementById('create').addEventListener('click', ()=>{
+    localStorage.setItem('nexpay_phrase', phrase.join(' '));
+    phraseEl.style.opacity=0;
+    setTimeout(()=>{
+      phraseEl.style.display="none";
+      loader.style.display="block";
+      requestAnimationFrame(()=>loader.style.opacity=1);
+    }, 250);
+    setTimeout(()=>{ window.location.href='pin.html'; }, 7000);
+  });
+</script>
+</body>
+</html>

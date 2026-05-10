@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+<title>NexPay — Buy USDT</title>
+<meta name="theme-color" content="#060910"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060910;
+    --card: rgba(17, 25, 40, 0.85);
+    --border: rgba(255, 255, 255, 0.08);
+    --pri: #6ee7ff;
+    --pri2: #7c3aed;
+    --text: #f8fafc;
+    --text-dim: #94a3b8;
+  }
+
+  * { box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+  html, body { height: 100%; margin: 0; background-color: var(--bg); overflow-x: hidden; }
+
+  body {
+    display: flex; flex-direction: column; align-items: center; padding: 20px;
+    background-image:
+      radial-gradient(at 100% 0%, rgba(124, 58, 237, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(110, 231, 255, 0.05) 0px, transparent 50%);
+    background-attachment: fixed;
+    color: var(--text);
+  }
+
+  .wrap { width: 100%; max-width: 480px; animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  h2 { font-size: 24px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.5px; }
+  .seller { color: var(--text-dim); font-size: 14px; margin-bottom: 20px; }
+  .seller strong { color: var(--pri); }
+
+  .card {
+    background: var(--card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 24px; padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  label { display: block; margin-bottom: 10px; font-weight: 600; font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .input-group { position: relative; }
+
+  input {
+    width: 100%; padding: 18px; border-radius: 16px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: #fff; font-size: 18px; font-weight: 700;
+    outline: none; transition: all 0.2s;
+  }
+
+  input:focus { border-color: var(--pri); background: rgba(255, 255, 255, 0.06); box-shadow: 0 0 0 4px rgba(110, 231, 255, 0.1); }
+
+  .currency-tag { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font-weight: 800; color: var(--text-dim); }
+
+  #usdtInfo {
+    margin: 15px 0; padding: 12px; border-radius: 12px;
+    background: rgba(110, 231, 255, 0.05);
+    border: 1px solid rgba(110, 231, 255, 0.1);
+    color: var(--pri); font-weight: 700; text-align: center;
+    display: none; /* Hidden until calculation */
+  }
+
+  .btn {
+    width: 100%; padding: 16px; border: none; border-radius: 16px;
+    font-weight: 800; font-size: 16px;
+    background: linear-gradient(135deg, var(--pri), var(--pri2));
+    color: #060910; cursor: pointer; transition: transform 0.1s;
+    box-shadow: 0 8px 20px rgba(110, 231, 255, 0.2);
+  }
+
+  .btn:active { transform: scale(0.97); }
+
+  .note {
+    margin-top: 20px; font-size: 13px; color: var(--text-dim);
+    padding-top: 15px; border-top: 1px solid var(--border);
+    line-height: 1.5;
+  }
+
+  footer {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: rgba(6, 9, 16, 0.9); backdrop-filter: blur(15px);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around;
+    padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .fitem { color: var(--text-dim); text-decoration: none; font-weight: 700; font-size: 12px; }
+  .active { color: var(--pri); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h2>Buy USDT</h2>
+  <div class="seller">Seller • <strong>Gjames Bullstack</strong></div>
+
+  <div class="card">
+    <label for="amount">Amount (₦8,627 – ₦300,000)</label>
+    <div class="input-group">
+      <input id="amount" type="number" inputmode="numeric" pattern="\d*" placeholder="0.00" oninput="calcUSDT()"/>
+      <span class="currency-tag">NGN</span>
+    </div>
+
+    <div id="usdtInfo"></div>
+
+    <button class="btn" onclick="proceed()">Buy USDT</button>
+
+    <div class="note">
+      <strong>Seller’s note:</strong><br>
+      <em>Make the exact amount payment and upload your receipt for fast release.</em>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a class="fitem active" href="p2p.html">P2P Market</a>
+  <a class="fitem" href="order.html">My Orders</a>
+</footer>
+
+<script>
+function calcUSDT(){
+  const amt = parseInt(document.getElementById('amount').value, 10);
+  const info = document.getElementById('usdtInfo');
+  if(!isNaN(amt) && amt >= 8627 && amt <= 300000){
+    const usdt = (amt / 1539).toFixed(2);
+    info.style.display = "block";
+    info.textContent = `You receive ≈ ${usdt} USDT`;
+  } else {
+    info.style.display = "none";
+  }
+}
+
+function proceed(){
+  const amt = parseInt(document.getElementById('amount').value, 10);
+  if(isNaN(amt) || amt < 8627 || amt > 300000){
+    alert("Please enter an amount between ₦8,627 and ₦300,000.");
+    return;
+  }
+
+  const order = {
+    id: 'ORD-'+Date.now(),
+    seller: 'Gjames Bullstack',
+    amount: amt,
+    stage: 'make_payment',
+    stageEndAt: Date.now() + 15*60*1000,
+    messages: [],
+    autoReplySent: false,
+    createdAt: Date.now(),
+    status: 'In Progress'
+  };
+
+  localStorage.setItem('currentP2POrder', JSON.stringify(order));
+  const list = JSON.parse(localStorage.getItem('orders') || '[]');
+  list.unshift({id:order.id, seller:order.seller, amount:order.amount, status:'In Progress', createdAt:order.createdAt});
+  localStorage.setItem('orders', JSON.stringify(list));
+
+  location.href='payment.html';
+}
+
+// Session Timer Logic
+const TIMEOUT_DURATION = 60000;
+function checkSession() {
+    const lastActive = localStorage.getItem('lastActiveTime');
+    if (lastActive && (Date.now() - parseInt(lastActive) >= TIMEOUT_DURATION)) {
+        localStorage.removeItem('lastActiveTime');
+        window.location.href = 'pin.html';
+    }
+}
+function resetTimer() { localStorage.setItem('lastActiveTime', Date.now().toString()); }
+['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(ev => document.addEventListener(ev, resetTimer));
+checkSession();
+setInterval(checkSession, 2000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NexPay — Secure Crypto Wallet</title>
+<meta name="theme-color" content="#0b0f1a" />
+<!-- Open Graph Meta Tags -->
+<meta property="og:title" content="NexPay.com" />
+<meta property="og:description" content="Join over 42,000 users trading Bitcoin, USDT, and more securely with NexPay P2P. Fast, reliable, and trusted crypto transactions." />
+<meta property="og:image" content="https://tse2.mm.bing.net/th/id/OIP.pqODzZ87AJWeUQYDntvwTQHaEj?rs=1&pid=ImgDetMain&o=7&rm=3" />
+<meta property="og:url" content="https://capitalnest.github.io/NexPay.com" />
+<meta property="og:type" content="website" />
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="NexPay.com" />
+<meta name="twitter:description" content="Buy and sell crypto instantly with NexPay. 42,000+ active users. Secure. Fast. Reliable." />
+<meta name="twitter:image" content="https://tse2.mm.bing.net/th/id/OIP.pqODzZ87AJWeUQYDntvwTQHaEj?rs=1&pid=ImgDetMain&o=7&rm=3" />
+
+<!-- General Meta Tags -->
+<meta name="description" content="NexPay is a trusted P2P crypto marketplace with over 42,000 users. Buy and sell Bitcoin, USDT, and more with secure transactions." />
+<meta name="author" content="NexPay Team" />
+
+<style>
+    :root {
+  --bg:#0b0f1a; --card:#0f1424; --muted:#9aa3b2; --pri:#6ee7ff; --pri2:#7c3aed; --ok:#22c55e; --danger:#ef4444;
+  --br:22px; --shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+  --glow:0 0 0 rgba(110,231,255,.0);
+}
+* { box-sizing:border-box; }
+html, body {
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  overflow-x:hidden; /* only block sideways scroll */
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(124,58,237,.25), transparent 60%),
+              radial-gradient(900px 500px at -10% 100%, rgba(110,231,255,.18), transparent 60%), var(--bg);
+  color:#e7ecf5;
+  font-size:15px; line-height:1.6; letter-spacing:.2px;
+}
+
+/* Wrapper layout */
+.wrap { display:flex; flex-direction:column; min-height:100vh; }
+main.hero { flex:1; display:flex; justify-content:center; align-items:flex-start; padding:40px 20px; }
+
+/* Header */
+header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px clamp(16px,4vw,48px);
+  flex-wrap:wrap; gap:12px;
+}
+.brand { display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff; }
+.logo {
+  width:36px; height:36px; border-radius:12px;
+  background: conic-gradient(from 200deg, #6ee7ff, #7c3aed, #6ee7ff);
+  filter: drop-shadow(0 6px 20px rgba(124,58,237,.45));
+  position:relative; overflow:hidden;
+}
+.logo::after { content:""; position:absolute; inset:2px; border-radius:10px; background:#0b0f1a; }
+.brand span { font-weight:700; letter-spacing:.3px; font-size:clamp(16px,2vw,20px); }
+.nav { display:flex; flex-wrap:wrap; justify-content:center; }
+.nav a {
+  color:#e7ecf5b0; text-decoration:none; margin:6px 12px; transition:.2s;
+  font-size:clamp(14px,2vw,16px);
+}
+.nav a:hover { color:#e7ecf5; }
+
+/* Card centered */
+.card {
+  width:min(1100px, 95vw);
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)) , var(--card);
+  border:1px solid rgba(255,255,255,.06); border-radius: clamp(16px,3vw,32px);
+  box-shadow: var(--shadow);
+  display:grid; grid-template-columns: 1.1fr .9fr; gap: clamp(20px,4vw,40px);
+  padding: clamp(20px,4vw,42px);
+  margin:auto; /* center horizontally */
+}
+@media (max-width: 900px) {
+  .card { grid-template-columns:1fr; }
+}
+
+/* Texts */
+.title {
+  font-size: clamp(22px, 5vw, 44px); line-height:1.15; font-weight:800;
+  background: linear-gradient(92deg, #fff 0%, #dbe7ff 60%, #bfeeff 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow: 0 10px 40px rgba(124,58,237,.25);
+}
+.subtitle { color:#cbd5e1; margin-top:10px; font-size: clamp(14px, 2.5vw, 18px); }
+
+/* Pills */
+.stats { margin-top:18px; display:flex; flex-wrap:wrap; gap:12px; }
+.pill {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:8px 12px; border-radius:999px;
+  background: rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.25);
+  box-shadow: inset 0 0 30px rgba(124,58,237,.15);
+  font-weight:600; color:#e9ecff;
+  font-size:clamp(12px,2.5vw,15px);
+}
+.pill .dot {
+  width:8px; height:8px; border-radius:50%;
+  background:#22c55e; box-shadow:0 0 0 6px rgba(34,197,94,.15);
+}
+
+/* Buttons */
+.cta { display:flex; gap:12px; margin-top:26px; flex-wrap:wrap; }
+.btn {
+  cursor:pointer; border:none; padding:14px 18px; border-radius:14px;
+  font-weight:700; letter-spacing:.2px;
+  transition: transform .06s ease, box-shadow .2s ease, background .2s ease;
+  font-size:clamp(14px,2.5vw,16px);
+}
+.btn:active { transform:translateY(1px); }
+.btn-pri {
+  background: linear-gradient(90deg, #7c3aed, #6ee7ff);
+  color:#0b0f1a; box-shadow: 0 10px 30px rgba(124,58,237,.35);
+}
+.btn-sec {
+  background: transparent; border:1px solid rgba(255,255,255,.14); color:#e7ecf5;
+  flex:1; min-width:140px; text-align:center;
+}
+
+/* Right box */
+.glass {
+  background: radial-gradient(100% 100% at 0% 0%, rgba(126,58,237,.25), rgba(110,231,255,.12)) , rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius: 18px; padding:18px; box-shadow: var(--shadow);
+}
+.mock {
+  aspect-ratio: 4/3; border-radius:16px;
+  background: radial-gradient(120% 120% at 0% 0%, rgba(110,231,255,.12), transparent 60%),
+              linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+  border:1px solid rgba(255,255,255,.06); position:relative; overflow:hidden;
+}
+.spark {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(200px 200px at 20% 20%, rgba(110,231,255,.25), transparent 60%),
+    radial-gradient(200px 200px at 80% 30%, rgba(124,58,237,.25), transparent 60%),
+    radial-gradient(200px 200px at 60% 80%, rgba(110,231,255,.2), transparent 60%);
+  filter: blur(18px); mix-blend-mode:screen;
+  animation: drift 12s ease-in-out infinite alternate;
+}
+@keyframes drift { to { transform: translateY(-10px) translateX(8px) scale(1.02);} }
+
+/* Footer */
+footer {
+  padding:18px clamp(16px,4vw,48px);
+  color:#9aa3b2; font-size:clamp(12px,2vw,14px);
+  border-top:1px solid rgba(255,255,255,.06);
+  text-align:center;
+}
+
+  :root{
+    --bg:#0b0f1a; --card:#0f1424; --muted:#9aa3b2; --pri:#6ee7ff; --pri2:#7c3aed; --ok:#22c55e; --danger:#ef4444;
+    --br:22px; --shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+    --glow:0 0 0 rgba(110,231,255,.0);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background: radial-gradient(1200px 600px at 80% -10%, rgba(124,58,237,.25), transparent 60%),
+              radial-gradient(900px 500px at -10% 100%, rgba(110,231,255,.18), transparent 60%), var(--bg);
+    color:#e7ecf5; font: 15px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    letter-spacing:.2px;
+  }
+  .wrap{min-height:100%; display:grid; grid-template-rows:auto 1fr auto}
+  header{display:flex; align-items:center; justify-content:space-between; padding:18px clamp(16px,4vw,48px)}
+  .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff}
+  .logo{
+    width:36px; height:36px; border-radius:12px; background:
+      conic-gradient(from 200deg, #6ee7ff, #7c3aed, #6ee7ff);
+    filter: drop-shadow(0 6px 20px rgba(124,58,237,.45));
+    position:relative; overflow:hidden;
+  }
+  .logo::after{
+    content:""; position:absolute; inset:2px; border-radius:10px; background:#0b0f1a;
+  }
+  .brand span{font-weight:700; letter-spacing:.3px}
+  .nav a{color:#e7ecf5b0; text-decoration:none; margin-left:16px; transition:.2s}
+  .nav a:hover{color:#e7ecf5}
+  .hero{
+    display:grid; place-items:center; padding: clamp(24px,6vw,64px);
+  }
+  .card{
+    width:min(1100px, 92vw); background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)) , var(--card);
+    border:1px solid rgba(255,255,255,.06); border-radius: clamp(16px,3vw,32px);
+    box-shadow: var(--shadow);
+    display:grid; grid-template-columns: 1.1fr .9fr; gap: clamp(20px,4vw,40px); padding: clamp(20px,4vw,42px);
+  }
+  @media (max-width: 900px){ .card{grid-template-columns:1fr} }
+  .title{
+    font-size: clamp(26px, 4vw, 44px); line-height:1.15; font-weight:800;
+    background: linear-gradient(92deg, #fff 0%, #dbe7ff 60%, #bfeeff 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow: 0 10px 40px rgba(124,58,237,.25);
+  }
+  .subtitle{color:#cbd5e1; margin-top:10px; font-size: clamp(15px, 1.7vw, 18px)}
+  .stats{
+    margin-top:18px; display:flex; flex-wrap:wrap; gap:12px;
+  }
+  .pill{
+    display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px;
+    background: rgba(124,58,237,.15); border:1px solid rgba(124,58,237,.25);
+    box-shadow: inset 0 0 30px rgba(124,58,237,.15);
+    font-weight:600; color:#e9ecff;
+  }
+  .pill .dot{width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 0 6px rgba(34,197,94,.15)}
+  .cta{display:flex; gap:12px; margin-top:26px; flex-wrap:wrap}
+  .btn{
+    cursor:pointer; border:none; padding:14px 18px; border-radius:14px; font-weight:700; letter-spacing:.2px;
+    transition: transform .06s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-pri{
+    background: linear-gradient(90deg, #7c3aed, #6ee7ff);
+    color:#0b0f1a; box-shadow: 0 10px 30px rgba(124,58,237,.35);
+  }
+  .btn-sec{
+    background: transparent; border:1px solid rgba(255,255,255,.14); color:#e7ecf5;
+  }
+  .glass{
+    background: radial-gradient(100% 100% at 0% 0%, rgba(126,58,237,.25), rgba(110,231,255,.12)) , rgba(255,255,255,.02);
+    border:1px solid rgba(255,255,255,.07);
+    border-radius: 18px; padding:18px; box-shadow: var(--shadow);
+  }
+  .mock{
+    aspect-ratio: 4/3; border-radius:16px; background: radial-gradient(120% 120% at 0% 0%, rgba(110,231,255,.12), transparent 60%),
+      linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+    border:1px solid rgba(255,255,255,.06); position:relative; overflow:hidden;
+  }
+  .spark{
+    position:absolute; inset:0; background:
+      radial-gradient(200px 200px at 20% 20%, rgba(110,231,255,.25), transparent 60%),
+      radial-gradient(200px 200px at 80% 30%, rgba(124,58,237,.25), transparent 60%),
+      radial-gradient(200px 200px at 60% 80%, rgba(110,231,255,.2), transparent 60%);
+    filter: blur(18px); mix-blend-mode:screen; animation: drift 12s ease-in-out infinite alternate;
+  }
+  @keyframes drift { to { transform: translateY(-10px) translateX(8px) scale(1.02);} }
+  footer{padding:18px clamp(16px,4vw,48px); color:#9aa3b2; font-size:13px; border-top:1px solid rgba(255,255,255,.06)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="#">
+      <div class="logo" aria-hidden="true"></div>
+      <span>NexPay</span>
+    </a>
+    <nav class="nav">
+      <a href="NexPayL.html">Login</a>
+      <a href="NexpayS.html">Sign Up</a>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <section class="card">
+      <div>
+        <h1 class="title">NexPay</h1>
+        <p class="subtitle">Buy, store, and move assets with institutional-grade security and silky-smooth UX.</p>
+
+        <div class="stats">
+          <div class="pill"><span class="dot"></span> Trusted by <strong>&nbsp;43,000+ active users</strong></div>
+          <div class="pill">Non-custodial • You own your keys</div>
+        </div>
+
+        <div class="cta">
+          <a class="btn btn-pri" href="NexpayS.html">Create your wallet</a>
+          <a class="btn btn-sec" href="NexPayL.html">I already have a phrase</a>
+        </div>
+      </div>
+
+      <div class="glass">
+        <div class="mock">
+          <div class="spark"></div>
+        </div>
+        <div style="display:flex; gap:12px; margin-top:14px; flex-wrap:wrap;">
+          <div class="pill">Zero fees on first transfer</div>
+          <div class="pill">24/7 Secure Cloud Backup</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>© <span id="y"></span> NexPay. Secure. Fast.</footer>
+</div>
+<script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+<div id="security-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(4, 6, 11, 0.95); backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#0f172a; border:1px solid rgba(255,255,255,0.1); border-radius:32px; width:100%; max-width:400px; padding:32px; text-align:center; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+
+        <div style="width:64px; height:64px; background:rgba(239, 68, 68, 0.1); border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 24px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+
+        <h2 style="color:#fff; font-family:'Inter',sans-serif; font-size:22px; font-weight:800; margin-bottom:16px; letter-spacing:-0.5px;">Security Advisory</h2>
+
+        <p style="color:#94a3b8; font-family:'Inter',sans-serif; font-size:14px; line-height:1.6; margin-bottom:24px;">
+            <strong style="color:#fff;">Do not create a wallet in Incognito/Private mode.</strong>
+            Your access keys are stored locally on this device. Private browsing sessions delete local data upon closing, which will result in the <span style="color:#ef4444; font-weight:700;">permanent loss of your assets</span>.
+        </p>
+
+        <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:16px; margin-bottom:30px; border:1px solid rgba(255,255,255,0.05);">
+            <div style="display:flex; align-items:center; gap:10px; color:#fff; font-size:13px; font-weight:600; text-align:left;">
+                <span style="color:#10b981;">✓</span> Use a standard browser tab
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; color:#fff; font-size:13px; font-weight:600; text-align:left; margin-top:8px;">
+                <span style="color:#10b981;">✓</span> Ensure cookies are enabled
+            </div>
+        </div>
+
+        <button id="close-modal-btn" disabled style="width:100%; height:56px; border-radius:16px; border:none; background:#fff; color:#000; font-weight:700; font-size:15px; cursor:pointer; opacity:0.5; transition:0.3s;">
+            I Understand (10s)
+        </button>
+    </div>
+</div>
+
+<style>
+    @keyframes modalPop {
+        from { opacity: 0; transform: scale(0.9) translateY(20px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+</style>
+
+<script>
+    (function() {
+        const modal = document.getElementById('security-modal');
+        const btn = document.getElementById('close-modal-btn');
+
+        // Track views in localStorage
+        let views = parseInt(localStorage.getItem('nexpay_alert_views') || '0');
+
+        if (views < 2) {
+            modal.style.display = 'flex';
+            let timeLeft = 10;
+
+            const timer = setInterval(() => {
+                timeLeft--;
+                if (timeLeft > 0) {
+                    btn.textContent = `I Understand (${timeLeft}s)`;
+                } else {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.textContent = "Continue to Wallet";
+                    btn.style.cursor = 'pointer';
+                }
+            }, 1000);
+
+            btn.onclick = () => {
+                modal.style.display = 'none';
+                localStorage.setItem('nexpay_alert_views', (views + 1).toString());
+            };
+        } else {
+            modal.style.display = 'none';
+        }
+    })();
+</script>
+</body>
+</html>
+
