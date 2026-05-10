@@ -158,5 +158,76 @@
     setTimeout(()=>{ window.location.href='pin.html'; }, 7000);
   });
 </script>
+
+
+  
+    <div id="security-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(4, 6, 11, 0.95); backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#0f172a; border:1px solid rgba(255,255,255,0.1); border-radius:32px; width:100%; max-width:400px; padding:32px; text-align:center; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+        
+        <div style="width:64px; height:64px; background:rgba(239, 68, 68, 0.1); border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 24px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+
+        <h2 style="color:#fff; font-family:'Inter',sans-serif; font-size:22px; font-weight:800; margin-bottom:16px; letter-spacing:-0.5px;">Security Advisory</h2>
+        
+        <p style="color:#94a3b8; font-family:'Inter',sans-serif; font-size:14px; line-height:1.6; margin-bottom:24px;">
+            <strong style="color:#fff;">Do not create a wallet in Incognito/Private mode.</strong> 
+            Your access keys are stored locally on this device. Private browsing sessions delete local data upon closing, which will result in the <span style="color:#ef4444; font-weight:700;">permanent loss of your assets</span>.
+        </p>
+
+        <div style="background:rgba(255,255,255,0.03); border-radius:16px; padding:16px; margin-bottom:30px; border:1px solid rgba(255,255,255,0.05);">
+            <div style="display:flex; align-items:center; gap:10px; color:#fff; font-size:13px; font-weight:600; text-align:left;">
+                <span style="color:#10b981;">✓</span> Use a standard browser tab
+            </div>
+           
+        </div>
+
+        <button id="close-modal-btn" disabled style="width:100%; height:56px; border-radius:16px; border:none; background:#fff; color:#000; font-weight:700; font-size:15px; cursor:pointer; opacity:0.5; transition:0.3s;">
+            I Understand (10s)
+        </button>
+    </div>
+</div>
+
+<style>
+    @keyframes modalPop {
+        from { opacity: 0; transform: scale(0.9) translateY(20px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+</style>
+
+<script>
+    (function() {
+        const modal = document.getElementById('security-modal');
+        const btn = document.getElementById('close-modal-btn');
+        
+        // Track views in localStorage
+        let views = parseInt(localStorage.getItem('nexpay_alert_views') || '0');
+
+        if (views < 2) {
+            modal.style.display = 'flex';
+            let timeLeft = 10;
+
+            const timer = setInterval(() => {
+                timeLeft--;
+                if (timeLeft > 0) {
+                    btn.textContent = `I Understand (${timeLeft}s)`;
+                } else {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.textContent = "Continue to Wallet";
+                    btn.style.cursor = 'pointer';
+                }
+            }, 1000);
+
+            btn.onclick = () => {
+                modal.style.display = 'none';
+                localStorage.setItem('nexpay_alert_views', (views + 1).toString());
+            };
+        } else {
+            modal.style.display = 'none';
+        }
+    })();
+</script>
 </body>
 </html>
