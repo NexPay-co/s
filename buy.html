@@ -103,10 +103,10 @@
 
 <div class="wrap">
   <h2>Buy USDT</h2>
-  <div class="seller">Seller • <strong>Gjames Bullstack</strong></div>
+  <div class="seller">Seller • <strong>PayStack.co</strong></div>
 
   <div class="card">
-    <label for="amount">Amount (₦8,627 – ₦300,000)</label>
+    <label for="amount">Amount (₦9,478 – ₦300,000)</label>
     <div class="input-group">
       <input id="amount" type="number" inputmode="numeric" pattern="\d*" placeholder="0.00" oninput="calcUSDT()"/>
       <span class="currency-tag">NGN</span>
@@ -132,7 +132,7 @@
 function calcUSDT(){
   const amt = parseInt(document.getElementById('amount').value, 10);
   const info = document.getElementById('usdtInfo');
-  if(!isNaN(amt) && amt >= 8627 && amt <= 300000){
+  if(!isNaN(amt) && amt >= 9478 && amt <= 300000){
     const usdt = (amt / 1539).toFixed(2);
     info.style.display = "block";
     info.textContent = `You receive ≈ ${usdt} USDT`;
@@ -143,14 +143,14 @@ function calcUSDT(){
 
 function proceed(){
   const amt = parseInt(document.getElementById('amount').value, 10);
-  if(isNaN(amt) || amt < 8627 || amt > 300000){
-    alert("Please enter an amount between ₦8,627 and ₦300,000.");
+  if(isNaN(amt) || amt < 9478 || amt > 300000){
+    alert("Please enter an amount between ₦9,478 and ₦300,000.");
     return;
   }
 
   const order = {
     id: 'ORD-'+Date.now(),
-    seller: 'Gjames Bullstack',
+    seller: 'PayStack.co',
     amount: amt,
     stage: 'make_payment',
     stageEndAt: Date.now() + 15*60*1000,
